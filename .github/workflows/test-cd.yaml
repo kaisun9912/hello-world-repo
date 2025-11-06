@@ -3,6 +3,10 @@ name: Manage GCP Workbench Instance
 on:
   workflow_dispatch:
     inputs:
+      gcp_project_id:
+        description: 'GCP Project ID'
+        required: true
+
       instance_name:
         description: 'Select the Workbench instance name'
         required: true
@@ -31,7 +35,7 @@ jobs:
     - name: Set up gcloud CLI
       uses: google-github-actions/setup-gcloud@v1
       with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        project_id: ${{ gcp_project_id }}
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         export_default_credentials: true
 
@@ -45,13 +49,13 @@ jobs:
 
         case "$ACTION" in
           start)
-            gcloud Workbench instances start "$INSTANCE" --project="$PROJECT" --location="$LOCATION"
+            gcloud Workbench instances start "$INSTANCE" --project="$gcp_project_id" --location="$LOCATION"
             ;;
           stop)
-            gcloud Workbench instances stop "$INSTANCE" --project="$PROJECT" --location="$LOCATION"
+            gcloud Workbench instances stop "$INSTANCE" --project="$gcp_project_id" --location="$LOCATION"
             ;;
           reset)
-            gcloud Workbench instances reset "$INSTANCE" --project="$PROJECT" --location="$LOCATION"
+            gcloud Workbench instances reset "$INSTANCE" --project="$gcp_project_id" --location="$LOCATION"
             ;;
           *)
             echo "Invalid action: $ACTION"
