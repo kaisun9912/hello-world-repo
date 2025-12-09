@@ -74,8 +74,10 @@ jobs:
         INSTANCE="${{ github.event.inputs.instance_name }}"
         ACTION="${{ github.event.inputs.action }}"
         PROJECT=${{ github.event.inputs.gcp_project_id }}
+        
         echo "======= DEBUG ========"
-        echo "$env.DEPLOY_ENV_TYPE"
+        echo "${{ env.DEPLOY_ENV_TYPE }}"
+        echo "======= END DEBUG ========"
         echo "Performing '$ACTION' on instance '$INSTANCE'..."
 
         case "$ACTION" in
