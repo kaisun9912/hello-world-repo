@@ -41,9 +41,23 @@ on:
       - main
 
 jobs:
+  prepare_vars:
+    name: 🧪 Prepare Deployment Variables
+    runs-on: ubuntu-latest
+    outputs:
+      DEPLOY_ENV_TYPE: ${{ steps.vars.outputs.EFFECTIVE_ENV_TYPE_VALUE }} # uat, or prod (logical type)
+    steps:
+    - name: Set environment
+      id: vars
+      shell: bash
+      run: |
+        echo "EFFECTIVE_ENV_TYPE_VALUE=prod" >> $GITHUB_OUTPUT
+        
   manage-instance:
     runs-on: ubuntu-latest
-
+    needs: [prepare_vars]
+    env:
+        DEPLOY_ENV_TYPE: ${{ needs.prepare_vars.outputs.DEPLOY_ENV_TYPE }}
     steps:
     #- name: Checkout repository
     #  uses: actions/checkout@v3
@@ -60,18 +74,19 @@ jobs:
         INSTANCE="${{ github.event.inputs.instance_name }}"
         ACTION="${{ github.event.inputs.action }}"
         PROJECT=${{ github.event.inputs.gcp_project_id }}
-
+        ecgi "======= DEBUG ========
+        echo "$env.DEPLOY_ENV_TYPE"
         echo "Performing '$ACTION' on instance '$INSTANCE'..."
 
         case "$ACTION" in
           start)
-            gcloud Workbench instances start "$INSTANCE" --project="$PROJECT" --location="$LOCATION"
+            echo gcloud Workbench instances start "$INSTANCE" --project="$PROJECT" --location="$LOCATION"
             ;;
           stop)
-            gcloud Workbench instances stop "$INSTANCE" --project="$PROJET" --location="$LOCATION"
+            echo gcloud Workbench instances stop "$INSTANCE" --project="$PROJET" --location="$LOCATION"
             ;;
           reset)
-            gcloud Workbench instances reset "$INSTANCE" --project="$PROJECT" --location="$LOCATION"
+            echo gcloud Workbench instances reset "$INSTANCE" --project="$PROJECT" --location="$LOCATION"
             ;;
           *)
             echo "Invalid action: $ACTION"
