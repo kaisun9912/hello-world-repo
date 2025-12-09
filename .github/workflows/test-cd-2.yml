@@ -38,7 +38,7 @@ on:
           - reset
   push:
     branches:
-      - main
+      - uat
 
 jobs:
   prepare_vars:
@@ -74,7 +74,7 @@ jobs:
         INSTANCE="${{ github.event.inputs.instance_name }}"
         ACTION="${{ github.event.inputs.action }}"
         PROJECT=${{ github.event.inputs.gcp_project_id }}
-        ecgi "======= DEBUG ========
+        echo "======= DEBUG ========"
         echo "$env.DEPLOY_ENV_TYPE"
         echo "Performing '$ACTION' on instance '$INSTANCE'..."
 
