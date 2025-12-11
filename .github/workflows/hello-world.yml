@@ -1,5 +1,9 @@
 name: Hello World
-on: [push]
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - uat
 jobs:
   hello-job:
     runs-on: ubuntu-latest
